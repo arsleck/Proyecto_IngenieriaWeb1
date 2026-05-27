@@ -1,0 +1,92 @@
+/* =========================================
+   COMPONENTES: TABLAS, BOTONES Y TARJETAS
+   ========================================= */
+
+/* --- Tablas --- */
+.admin-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th, 
+.admin-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.admin-table th {
+    background-color: #f9fafb;
+    color: #4b5563;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.admin-table img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+/* --- Botones de Acción (Tabla) --- */
+.btn-edit, 
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    margin-right: 5px;
+}
+
+.btn-edit { background: #2196F3; color: white; }
+.btn-edit:hover { background: #1976D2; transform: scale(1.05); }
+
+.btn-danger { background: #ef4444; color: white; }
+.btn-danger:hover { background: #dc2626; transform: scale(1.05); }
+
+/* --- Iconos Vectoriales --- */
+.admin-nav-icon {
+    width: 22px;
+    height: 22px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.admin-nav a:hover .admin-nav-icon, 
+.admin-nav a.active .admin-nav-icon {
+    opacity: 1;
+}
+
+.admin-footer button:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- Tarjetas de Estadísticas --- */
+.stats-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    min-height: 300px;
+}

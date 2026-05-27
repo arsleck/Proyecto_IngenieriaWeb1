@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeckCel | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/modales.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-components.css">
+</head>
+<body class="admin-body">
+
+    <aside class="admin-sidebar">
+        <div class="admin-logo">
+            <a href="../html/index.html">
+            <img src="../img/assets/icon.png" alt="Logo">
+            </a>
+            <h2>TeckCel Admin</h2>
+        </div>
+        
+        <nav class="admin-nav">
+            <a href="#" id="nav-productos" class="active" onclick="mostrarSeccion('productos')">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/box.png" alt="Productos" class="admin-nav-icon">
+                Productos
+            </a>
+            <a href="#" id="nav-pedidos" onclick="mostrarSeccion('pedidos')">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/delivery.png" alt="Pedidos" class="admin-nav-icon">
+                Pedidos
+            </a>
+            <a href="#" id="nav-estadisticas" onclick="mostrarSeccion('estadisticas')">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/graph-report.png" alt="Estadísticas" class="admin-nav-icon">
+                Estadísticas
+            </a>
+        </nav>
+        
+        <div class="admin-footer">
+            <button onclick="cerrarSesionAdmin()" class="btn-outline-white" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; background: transparent; border: 1px solid #4b5563; color: #9ca3af;">
+                <img src="https://img.icons8.com/ios-filled/50/9ca3af/logout-rounded.png" alt="Salir" style="width: 18px; height: 18px; transition: 0.3s;">
+                Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <main class="admin-content">
+        
+        <section id="seccion-productos">
+            <header class="admin-header">
+                <h1>Gestión de Inventario</h1>
+                <button class="btn-primary-light" onclick="abrirModalProducto()">+ Nuevo Producto</button>
+            </header>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-productos-admin">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="seccion-pedidos" class="hidden">
+            <header class="admin-header">
+                <h1>Gestión de Pedidos</h1>
+            </header>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nº Pedido</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Dirección</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-pedidos-admin">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="seccion-estadisticas" class="hidden">
+            <header class="admin-header">
+                <h1>Reporte Ejecutivo</h1>
+            </header>
+            
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; text-align: center;">
+                    <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Ingresos Totales</h3>
+                    <p id="stat-ingresos" style="color: #10b981; font-size: 1.8rem; font-weight: bold;">$0</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; text-align: center;">
+                    <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Total Pedidos</h3>
+                    <p id="stat-pedidos" style="color: #3b82f6; font-size: 1.8rem; font-weight: bold;">0</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; text-align: center;">
+                    <h3 style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">Clientes Registrados</h3>
+                    <p id="stat-clientes" style="color: #8b5cf6; font-size: 1.8rem; font-weight: bold;">0</p>
+                </div>
+            </div>
+
+            <div class="admin-table-container">
+                <h3 style="padding: 20px; margin: 0; border-bottom: 1px solid #e5e7eb; color: #111827;">Top 3 Productos Más Vendidos</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Producto</th>
+                            <th style="text-align: center;">Unidades Vendidas</th>
+                            <th style="text-align: right;">Ingresos Totales</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-top-productos">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="modal-producto" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="search-modal-header">
+                <h2 id="modal-titulo">Agregar Producto</h2>
+                <button onclick="cerrarModalProducto()" class="close-btn">&times;</button>
+            </div>
+            
+            <form id="form-producto" onsubmit="guardarProducto(event)">
+                <input type="hidden" id="prod-id"> 
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label>Nombre:</label>
+                        <input type="text" id="prod-nombre" class="input-light" required>
+                    </div>
+                    <div>
+                        <label>Marca:</label>
+                        <input type="text" id="prod-marca" class="input-light" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label>Categoría:</label>
+                        <select id="prod-categoria" class="input-light" required style="cursor: pointer;">
+                            <option value="" disabled selected>Selecciona una categoría...</option>
+                            <option value="Celulares">Celulares</option>
+                            <option value="Laptops">Laptops</option>
+                            <option value="Tablets">Tablets</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Precio (COP):</label>
+                        <input type="number" id="prod-precio" class="input-light" required>
+                    </div>
+                    <div>
+                        <label>Stock:</label>
+                        <input type="number" id="prod-stock" class="input-light" value="1" min="0" required>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label>Subir Imagen:</label>
+                    <input type="file" id="prod-imagen-file" class="input-light" accept="image/*" required>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label>Descripción:</label>
+                    <textarea id="prod-descripcion" class="input-light" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary-light" style="width: 100%;">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/admin/admin.js"></script>
+    <script src="../js/admin/admin_estadisticas.js"></script>
+    <script src="../js/admin/admin_pedidos.js"></script> 
+    <script src="../js/admin/admin_productos.js"></script>
+</body>
+</html>

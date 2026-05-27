@@ -1,0 +1,406 @@
+/* ============================================================
+   RASTREO DE PEDIDO — TECKCEL
+   ============================================================ */
+
+/* ── FONDO DE PÁGINA ── */
+body { background: #f4f5f7; }
+
+/* ── WRAPPER GENERAL ── */
+.rastreo-container {
+    max-width: 1180px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+}
+
+.rastreo-header { margin-bottom: 28px; }
+.rastreo-header h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px;
+}
+.rastreo-header p { color: #6b7280; font-size: 0.9rem; margin: 0; }
+
+/* ── LAYOUT PRINCIPAL: GRID ── */
+.rastreo-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── PANEL IZQUIERDO ── */
+.rastreo-col-info {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Número de pedido */
+.rastreo-pedido-id {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid #f3f4f6;
+}
+.rastreo-pedido-id .label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 2px;
+}
+.rastreo-pedido-id .value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+}
+.rastreo-pedido-id .estado-badge {
+    background: #f0fdf4;
+    color: #16a34a;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #bbf7d0;
+}
+
+/* Timeline de estados */
+.rastreo-timeline { display: flex; flex-direction: column; gap: 0; }
+.rastreo-timeline-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+}
+
+.timeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 20px;
+}
+.timeline-step:last-child { padding-bottom: 0; }
+
+/* Línea conectora */
+.timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    width: 2px;
+    height: calc(100% - 14px);
+    background: #e5e7eb;
+}
+.timeline-step.done::after,
+.timeline-step.active::after { background: #ff0076; }
+
+.timeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #e5e7eb;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+}
+.timeline-step.done  .timeline-dot { background: #ff0076; border-color: #ff0076; color: #fff; }
+.timeline-step.active .timeline-dot {
+    background: #fff;
+    border-color: #ff0076;
+    color: #ff0076;
+    box-shadow: 0 0 0 4px rgba(255,0,118,0.12);
+    animation: pulseDot 1.5s infinite;
+}
+@keyframes pulseDot {
+    0%,100% { box-shadow: 0 0 0 4px rgba(255,0,118,0.12); }
+    50%      { box-shadow: 0 0 0 8px rgba(255,0,118,0.06); }
+}
+.timeline-step.pending .timeline-dot { color: #d1d5db; }
+
+.timeline-text .tl-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #111827;
+    display: block;
+}
+.timeline-step.pending .timeline-text .tl-name { color: #9ca3af; }
+.timeline-text .tl-hora {
+    font-size: 0.76rem;
+    color: #9ca3af;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Selector de destino */
+.rastreo-destino-wrap .rastreo-label {
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.rastreo-select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    color: #111827;
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+.rastreo-select:focus { border-color: #ff0076; }
+
+/* Info de origen */
+.rastreo-origen {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 13px 16px;
+    border: 1px solid #f3f4f6;
+}
+.rastreo-origen .label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 4px;
+}
+.rastreo-origen strong { font-size: 0.9rem; color: #374151; font-weight: 600; }
+
+/* Bloque operador + ETA */
+.rastreo-footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+.rastreo-operador .label,
+.rastreo-eta .label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    display: block;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+}
+.rastreo-operador strong { font-size: 0.9rem; color: #111827; }
+.rastreo-eta { text-align: right; }
+.rastreo-eta strong {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff0076;
+    display: block;
+}
+.rastreo-eta span { font-size: 0.75rem; color: #9ca3af; }
+
+/* ── PANEL DERECHO: MAPA ── */
+.rastreo-col-mapa {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+}
+
+.mapa-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.mapa-header span {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.mapa-live-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #16a34a;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+.mapa-live-dot {
+    width: 7px;
+    height: 7px;
+    background: #16a34a;
+    border-radius: 50%;
+    animation: pulseLive 1.2s infinite;
+}
+@keyframes pulseLive {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+}
+
+#mapa-interactivo { width: 100%; height: 500px; }
+
+/* ── ESTADO SIN PEDIDO ── */
+.no-order-card {
+    background: #ffffff;
+    max-width: 480px;
+    margin: 80px auto;
+    padding: 48px 36px;
+    border-radius: 24px;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+}
+.no-order-icon {
+    width: 72px;
+    height: 72px;
+    background: #fff1f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+}
+.no-order-icon svg { width: 36px; height: 36px; }
+.no-order-card h2 { font-size: 1.3rem; font-weight: 700; color: #111827; margin: 0 0 10px; }
+.no-order-card p { color: #6b7280; font-size: 0.9rem; line-height: 1.7; margin: 0 0 28px; }
+.btn-ir-catalogo {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff0076, #c2006a);
+    color: #fff;
+    border: none;
+    padding: 13px 32px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.btn-ir-catalogo:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+    .rastreo-layout { grid-template-columns: 1fr; }
+    .rastreo-col-mapa { position: static; }
+    #mapa-interactivo { height: 380px; }
+}
+@media (max-width: 480px) {
+    .rastreo-container { margin: 16px auto; }
+    .no-order-card { padding: 32px 20px; margin: 40px auto; }
+}
+
+/* ── PRODUCTOS DEL PEDIDO ── */
+.rastreo-productos-wrap {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 18px;
+}
+
+.rastreo-productos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.rastreo-productos-lista::-webkit-scrollbar { width: 4px; }
+.rastreo-productos-lista::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+
+.rastreo-producto-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #f3f4f6;
+}
+.rastreo-producto-item img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #fff;
+    flex-shrink: 0;
+    padding: 3px;
+}
+.rastreo-producto-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.rastreo-producto-nombre {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.rastreo-producto-marca {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+.rastreo-producto-precio {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ff0076;
+    flex-shrink: 0;
+}
+
+.rastreo-productos-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0 0;
+    border-top: 1px dashed #e5e7eb;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+.rastreo-productos-total strong {
+    font-size: 1rem;
+    color: #111827;
+    font-weight: 700;
+}

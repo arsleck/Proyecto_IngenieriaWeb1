@@ -1,0 +1,325 @@
+/* ============================================================
+   MODAL DE PRODUCTO + VALORACIONES
+   Archivo: public/css/productoModal.css
+   ============================================================ */
+
+/* ── OVERLAY ── */
+.prod-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.prod-overlay.visible { display: flex; }
+
+/* ── CARD ── */
+.prod-modal {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 860px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.28s ease;
+}
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── TOP: imagen + info ── */
+.pd-top {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    border-bottom: 1px solid #f0f0f0;
+}
+.pd-img-wrap {
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    border-right: 1px solid #f0f0f0;
+}
+.pd-img-wrap img {
+    width: 190px;
+    height: 190px;
+    object-fit: contain;
+}
+.pd-info {
+    padding: 26px 26px 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.pd-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.pd-close:hover { background: #e5e7eb; }
+
+.pd-badge {
+    display: inline-block;
+    background: #fff0f6;
+    color: #ff0076;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+.pd-nombre {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    padding-right: 40px;
+}
+.pd-stars-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.pd-stars-big { color: #f59e0b; font-size: 1rem; letter-spacing: 1px; }
+.pd-stars-label { font-size: 0.82rem; color: #888; }
+
+.pd-precio {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ff0076;
+    margin-bottom: 10px;
+}
+.pd-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.pd-btn-comprar {
+    background: linear-gradient(135deg, #ff0076, #c2006a);
+    color: #fff;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    width: fit-content;
+}
+.pd-btn-comprar:hover { opacity: 0.88; }
+
+/* ── TABS ── */
+.pd-tabs {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+.pd-tab {
+    flex: 1;
+    padding: 13px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: 0.2s;
+}
+.pd-tab.active { color: #ff0076; border-bottom-color: #ff0076; }
+.pd-tab:hover { color: #ff0076; }
+
+/* ── BODY scrollable ── */
+.pd-body {
+    overflow-y: auto;
+    padding: 22px 26px 30px;
+    flex: 1;
+}
+
+/* ── RESUMEN ESTRELLAS ── */
+.pd-rating-summary {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+.pd-rating-big { text-align: center; min-width: 70px; }
+.pd-num { font-size: 2.6rem; font-weight: 800; color: #111; line-height: 1; }
+.pd-total { font-size: 0.78rem; color: #aaa; margin-top: 4px; }
+
+.pd-bars { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.pd-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #666;
+}
+.pd-bar-track {
+    flex: 1;
+    height: 7px;
+    background: #e9e9e9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.pd-bar-fill {
+    height: 100%;
+    background: #f59e0b;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* ── FORMULARIO RESEÑA ── */
+.pd-review-form {
+    background: #fff8fb;
+    border: 1px solid #ffd6e8;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+}
+.pd-review-form h4 { font-size: 0.92rem; font-weight: 700; color: #333; margin-bottom: 10px; }
+
+.pd-star-picker { display: flex; gap: 5px; margin-bottom: 10px; font-size: 1.6rem; cursor: pointer; }
+.pd-star-picker span { color: #ddd; transition: color 0.12s; user-select: none; }
+.pd-star-picker span.on { color: #f59e0b; }
+
+.pd-review-form textarea {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.86rem;
+    resize: none;
+    font-family: inherit;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.pd-review-form textarea:focus { border-color: #ff0076; }
+
+.pd-btn-enviar {
+    margin-top: 10px;
+    background: #ff0076;
+    color: #fff;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.pd-btn-enviar:hover { opacity: 0.88; }
+.pd-btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── AVISO BLOQUEADO ── */
+.pd-locked {
+    text-align: center;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    color: #666;
+}
+.pd-locked a { color: #ff0076; font-weight: 600; }
+.pd-locked p { margin-top: 4px; font-size: 0.8rem; color: #aaa; }
+
+/* ── CARDS DE RESEÑAS ── */
+.pd-review-card {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 15px 0;
+}
+.pd-review-card:last-child { border-bottom: none; }
+
+.pd-review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+.pd-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff0076, #9c27b0);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.pd-autor { font-weight: 600; font-size: 0.88rem; color: #222; }
+.pd-fecha { font-size: 0.76rem; color: #aaa; margin-left: auto; }
+.pd-stars { color: #f59e0b; font-size: 0.88rem; margin-bottom: 5px; }
+.pd-texto { font-size: 0.85rem; color: #555; line-height: 1.6; }
+
+/* ── TABLA DE SPECS ── */
+.pd-specs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.pd-specs-table tr { border-bottom: 1px solid #f3f4f6; }
+.pd-specs-table td { padding: 11px 8px; }
+.pd-specs-table td:first-child { color: #888; width: 40%; font-weight: 500; }
+.pd-specs-table td:last-child { color: #222; font-weight: 600; }
+
+/* ── SKELETON LOADER ── */
+.prod-skeleton {
+    display: flex;
+    gap: 24px;
+    padding: 30px;
+    min-height: 200px;
+    align-items: center;
+}
+.skel-img { width: 180px; height: 180px; background: #e9e9e9; border-radius: 12px; flex-shrink: 0; animation: pulse 1.2s infinite; }
+.skel-lines { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.skel-line { height: 16px; background: #e9e9e9; border-radius: 8px; animation: pulse 1.2s infinite; }
+.skel-line.w60 { width: 60%; }
+.skel-line.w80 { width: 80%; }
+.skel-line.w40 { width: 40%; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+    .pd-top { grid-template-columns: 1fr; }
+    .pd-img-wrap { border-right: none; border-bottom: 1px solid #f0f0f0; padding: 20px; }
+    .pd-img-wrap img { width: 140px; height: 140px; }
+    .pd-info { padding: 18px; }
+    .pd-nombre { font-size: 1.1rem; }
+    .pd-precio { font-size: 1.4rem; }
+}

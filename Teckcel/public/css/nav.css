@@ -1,0 +1,53 @@
+/* --- NAVEGACIÓN CLARA --- */
+.top-nav { background-color: var(--bg-nav); border-bottom: 1px solid var(--border-color); padding: 10px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+.brand-logo { color: var(--text-main); text-decoration: none; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.brand-logo-img { width: 32px; height: 32px; object-fit: contain; }
+
+.nav-links { display: flex; gap: 30px; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: bold; transition: all 0.3s; }
+.nav-icon-img { width: 28px; height: 28px; opacity: 0.6; transition: 0.3s; }
+.nav-item:hover, .nav-item.active { color: #ff0076; }
+.nav-item:hover .nav-icon-img, .nav-item.active .nav-icon-img { opacity: 1; transform: translateY(-2px); }
+
+.search-bar { background-color: #f1f3f4; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; width: 350px; }
+.search-bar input { background: transparent; border: none; color: var(--text-main); outline: none; width: 100%; margin-left: 10px; font-size: 0.95rem; }
+
+.nav-actions { display: flex; align-items: center; gap: 15px; }
+.icon-btn, .user-btn { background: none; border: none; font-size: 1.2rem; position: relative; cursor: pointer; }
+.badge { background-color: var(--text-main); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; position: absolute; top: -5px; right: -10px; }
+.avatar { background-color: #333; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+/* =========================================
+   ICONOS DE LA BARRA DE NAVEGACIÓN
+   ========================================= */
+
+/* Icono de la lupa en el buscador */
+.search-icon-img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+}
+
+/* Iconos de Campana, Corazón y Carrito */
+.action-icon {
+    width: 26px;
+    height: 26px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: block; /* Ayuda a centrar la imagen en el botón */
+}
+
+/* Efecto hover: se oscurecen y crecen ligeramente */
+.icon-btn:hover .action-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Ajuste fino de la burbuja roja/morada (Badge) para que encaje bien con las imágenes */
+.nav-actions .badge {
+    top: -5px;
+    right: -8px;
+    border: 2px solid #ffffff; /* Le da un borde blanco para que resalte sobre el icono */
+    padding: 2px 5px;
+}

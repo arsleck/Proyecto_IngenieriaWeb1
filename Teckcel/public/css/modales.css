@@ -1,0 +1,271 @@
+/* ============================================================
+   ESTILOS BASE PARA MODALES (Login, Registro, Alertas)
+   ============================================================ */
+
+/* Contenedor oscuro base (para el login y otros modales) */
+.modal-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.hidden { display: none !important; }
+
+/* Tarjetas blancas estándar */
+.light-modal {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    border: 1px solid #eeeeee;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Inputs y botones de los modales */
+.input-light {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    outline: none;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+.input-light:focus {
+    border-color: #ff0076;
+    box-shadow: 0 0 0 3px rgba(255,0,118,0.1);
+}
+
+.btn-primary-light {
+    width: 100%;
+    background: #ff0076;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn-primary-light:hover { background: #e6006a; }
+.btn-primary-light:active { transform: scale(0.98); }
+
+
+/* =========================================
+   MODAL DE BÚSQUEDA AVANZADA (PREMIUM)
+   ========================================= */
+
+/* Overlay — centra el panel en pantalla */
+#modal-buscador {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    z-index: 1100;
+    align-items: center;        /* ← centrado vertical */
+    justify-content: center;    /* ← centrado horizontal */
+    padding: 20px;
+}
+#modal-buscador:not(.hidden) { display: flex; }
+
+/* Panel principal */
+.search-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 660px;
+    border-radius: 22px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+    display: flex;
+    flex-direction: column;
+    max-height: 82vh;
+    animation: searchSlideIn 0.25s ease;
+}
+@keyframes searchSlideIn {
+    from { transform: translateY(-18px) scale(0.97); opacity: 0; }
+    to   { transform: translateY(0)     scale(1);    opacity: 1; }
+}
+
+/* Header */
+.search-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+.search-modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+.search-modal-header .close-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.search-modal-header .close-btn:hover { background: #e5e7eb; }
+
+/* Barra de búsqueda */
+.search-modal-input-container {
+    display: flex;
+    align-items: center;
+    background: #f3f4f6;
+    border-radius: 14px;
+    padding: 13px 18px;
+    margin-bottom: 20px;
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+    gap: 10px;
+}
+.search-modal-input-container:focus-within {
+    border-color: #ff0076;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 0, 118, 0.08);
+}
+.search-modal-input-container input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1.05rem;
+    color: #111827;
+    font-family: inherit;
+}
+.search-modal-input-container input::placeholder { color: #aaa; }
+.search-modal-input-container .search-icon { font-size: 1rem; flex-shrink: 0; }
+
+/* Área de resultados con scroll */
+.search-modal-results {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.search-modal-results::-webkit-scrollbar { width: 5px; }
+.search-modal-results::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 10px; }
+.search-modal-results::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
+
+/* Títulos de categoría */
+.search-col h4 {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid #f3f4f6;
+}
+
+/* Tarjeta de resultado */
+.search-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 14px;
+    border: 1.5px solid #f3f4f6;
+    border-radius: 14px;
+    text-decoration: none;
+    background: #fff;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.search-item:last-child { margin-bottom: 0; }
+.search-item:hover {
+    border-color: #ffd6e8;
+    background: #fff8fb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 0, 118, 0.08);
+}
+.search-item img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #f8f9fa;
+    padding: 4px;
+}
+.search-item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.search-item-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.search-item-price {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ff0076;
+}
+
+/* Badge de puntuación con colores dinámicos */
+.search-item-score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-weight: 800;
+    color: white;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+}
+/* Los colores se aplican desde JS según el valor */
+.score-alto   { background: linear-gradient(135deg, #16a34a, #15803d); }
+.score-medio  { background: linear-gradient(135deg, #d97706, #b45309); }
+.score-bajo   { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+.score-nuevo  { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+/* Estado vacío / sin resultados */
+.search-empty {
+    text-align: center;
+    padding: 30px 0;
+    color: #9ca3af;
+    font-size: 0.9rem;
+}
+.search-empty span { display: block; font-size: 2rem; margin-bottom: 8px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .search-modal { padding: 20px 16px 18px; border-radius: 18px; }
+    .search-item-name { font-size: 0.85rem; }
+    .search-item-price { font-size: 0.82rem; }
+}

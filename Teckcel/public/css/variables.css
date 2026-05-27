@@ -1,0 +1,11 @@
+:root {
+    --bg-main: #f8f9fa;        /* Fondo claro principal */
+    --bg-nav: #ffffff;         /* Fondo blanco para nav y tarjetas */
+    --text-main: #333333;      /* Texto principal oscuro */
+    --text-muted: #666666;     /* Texto secundario gris */
+    --accent: #2196F3;         /* Azul estilo link de precio */
+    --border-color: #e0e0e0;   /* Líneas divisorias suaves */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; }
+body { background-color: var(--bg-main); color: var(--text-main); }
