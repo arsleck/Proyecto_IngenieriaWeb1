@@ -155,7 +155,7 @@ async function renderizarPantallaRastreo(contenedor, pedido) {
 
 function construirTimeline(estadoActual, pedido) {
     const pasos = [
-        { key: 'Pendiente',   label: 'Pedido confirmado',         sub: pedido ? formatearHora(pedido.fecha_pedido) : '' },
+        { key: 'Pendiente',   label: 'Pedido confirmado',        sub: pedido ? formatearHora(pedido.fecha_pedido) : '' },
         { key: 'En tránsito', label: 'Preparado y despachado',     sub: 'Sede Central UMB' },
         { key: 'En reparto',  label: 'Andrés en camino',  sub: 'Ruta TeckCel' },
         { key: 'Entregado',   label: 'Completado ✓',                sub: estadoActual === 'Entregado' ? 'Gracias por tu compra' : 'Pendiente' }
@@ -358,19 +358,183 @@ function actualizarTimelineFrontend(nuevoEstado) {
         }
     });
 }
-
+// ── FUNCIÓN GEOCODIFICADORA ANTI-FALLOS (SISTEMA HEURÍSTICO) ──────────
 async function geocodificarDireccion(direccion) {
-    const fallback = { lat: 4.6950, lng: -74.0820 }; 
-    try {
-        if (direccion.toLowerCase().includes('75 a') || direccion.toLowerCase().includes('94-19')) return { lat: 4.7025, lng: -74.0985 }; 
-        let direccionLimpia = direccion.replace(/#/g, '').replace(/-/g, ' ').replace(/No\./gi, '').trim();
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(direccionLimpia + ', Bogotá, Colombia')}&format=json&limit=1`;
-        const res = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'TeckcelUMB/1.0' }});
-        const data = await res.json();
-        if (data.length > 0 && parseFloat(data[0].lat) > 4.4 && parseFloat(data[0].lat) < 4.9) {
-            return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    // 1. DICCIONARIO DE LOCALIDADES (Red de seguridad interna)
+    // Si la API colapsa o no encuentra la calle, buscaremos estas palabras clave.
+    const ZONAS_BOGOTA = {
+        'usaquen': {lat: 4.7300, lng: -74.0300},
+        'chapinero': {lat: 4.6460, lng: -74.0600},
+        'santa fe': {lat: 4.6050, lng: -74.0660},
+        'san cristobal': {lat: 4.5600, lng: -74.0800},
+        'usme': {lat: 4.4500, lng: -74.1100},
+        'tunjuelito': {lat: 4.5800, lng: -74.1400},
+        'bosa': {lat: 4.6100, lng: -74.1900},
+        'kennedy': {lat: 4.6300, lng: -74.1500},
+        'fontibon': {lat: 4.6700, lng: -74.1400},
+        'engativa': {lat: 4.7000, lng: -74.1000},
+        'suba': {lat: 4.7400, lng: -74.0800},
+        'barrios unidos': {lat: 4.6600, lng: -74.0700},
+        'teusaquillo': {lat: 4.6400, lng: -74.0850},
+        'martires': {lat: 4.6000, lng: -74.0850},
+        'antonio narino': {lat: 4.5850, lng: -74.1000},
+        'puente aranda': {lat: 4.6150, lng: -74.1100},
+        'candelaria': {lat: 4.5950, lng: -74.0750},
+        'rafael uribe': {lat: 4.5650, lng: -74.1150},
+        'ciudad bolivar': {lat: 4.5300, lng: -74.1600}
+    };
+
+    // Coordenada absoluta de emergencia (Centro de la ciudad)
+    const fallbackAbsoluto = { lat: 4.6097, lng: -74.0817 }; 
+    if (!direccion || direccion.trim() === '') return fallbackAbsoluto;
+
+    // 2. LIMPIEZA Y NORMALIZACIÓN EXTREMA
+    let limpia = direccion
+        .replace(/\bAc\.?\b/gi, 'Calle')        
+        .replace(/\bAk\.?\b/gi, 'Carrera')      
+        .replace(/\bCl\.?\b/gi, 'Calle')
+        .replace(/\bCra?\.?\b|\bKr\.?\b|\bKrr\.?\b/gi, 'Carrera')
+        .replace(/\bAv\.?\b/gi, 'Avenida')
+        .replace(/\bDg\.?\b/gi, 'Diagonal')
+        .replace(/\bTv\.?\b/gi, 'Transversal')
+        .replace(/\bMz\.?\b|\bManzana\b/gi, ' ') // Mapas libres odian Mz, Lt, Int
+        .replace(/\bLt\.?\b|\bLote\b/gi, ' ')
+        .replace(/\bInt\.?\b|\bInterior\b/gi, ' ')
+        .replace(/\bBl\.?\b|\bBloque\b/gi, ' ')
+        // Quitamos la lista de zonas de la cadena de búsqueda exacta
+        .replace(/bogot[aá]|colombia/gi, '')
+        .replace(/chapinero|usaqu[eé]n|suba|engativ[aá]|fontib[oó]n|kennedy|bosa|tunjuelito|usme|ciudad bol[ií]var|teusaquillo/gi, '') 
+        .replace(/#/g, '')          
+        .replace(/\s*-\s*/g, ' ')   
+        .replace(/No\.?\s*/gi, '')  
+        .replace(/,/g, ' ')         
+        .replace(/\s{2,}/g, ' ')    
+        .trim();
+
+    // 3. ESTRATEGIA DE DEGRADACIÓN ESPACIAL
+    let partes = limpia.split(' ');
+    
+    // Variante A: Esquina
+    let interseccion = limpia;
+    if (partes.length >= 3 && !isNaN(partes[partes.length - 1])) {
+        interseccion = partes.slice(0, -1).join(' '); 
+    }
+
+    // Variante B: Vía Principal
+    let callePrincipal = limpia;
+    if (partes.length >= 4) {
+        callePrincipal = partes.slice(0, 4).join(' ');
+    }
+
+    const variantes = [
+        `${limpia}, Bogotá, Colombia`,           // Nivel 1: Dirección completa
+        `${interseccion}, Bogotá, Colombia`,     // Nivel 2: Intersección (Esquina)
+        `${callePrincipal}, Bogotá, Colombia`    // Nivel 3: Solo la vía principal
+    ];
+
+    // 4. CONSULTAS A LA API
+    for (const query of variantes) {
+        try {
+            const queryLimpia = query.replace(/\s{2,}/g, ' ').trim();
+            const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(queryLimpia)}&format=json&limit=1&countrycodes=co`;
+            
+            const res  = await fetch(url, {
+                headers: { 'Accept-Language': 'es', 'User-Agent': 'TeckcelUMB/2.0' }
+            });
+            const data = await res.json();
+
+            if (data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lng = parseFloat(data[0].lon);
+
+                // Validación estricta: Cuadro delimitador (Bounding Box) de la ciudad
+                if (lat > 4.45 && lat < 4.85 && lng > -74.25 && lng < -73.99) {
+                    console.log(`✅ Coordenada API encontrada vía: "${queryLimpia}"`);
+                    return { lat, lng };
+                }
+            }
+        } catch (_) {
+            // Ignoramos errores de red y pasamos a la siguiente variante
         }
-    } catch (error) {}
+    }
+
+    // 5. SISTEMA HEURÍSTICO (El salvavidas si la API falla por completo)
+    // Escaneamos el texto que escribió el cliente buscando coincidencias con las zonas conocidas.
+    const dirMinusculas = direccion.toLowerCase();
+    
+    for (const [zona, coordenadas] of Object.entries(ZONAS_BOGOTA)) {
+        // Normalizamos la zona quitando tildes para la comparación
+        const zonaNormalizada = zona.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        if (dirMinusculas.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(zonaNormalizada)) {
+            console.warn(`⚠️ API falló. Usando centro de localidad [${zona.toUpperCase()}] por inferencia de texto.`);
+            return coordenadas;
+        }
+    }
+
+    // 6. ÚLTIMO RECURSO ABSOLUTO
+    console.error(`🚨 Fallo total de rastreo para "${direccion}". Usando punto cero.`);
+    return fallbackAbsoluto;
+}
+// ── NUEVA FUNCIÓN GEOCODIFICADORA (ESPECIAL PARA COLOMBIA) ──────────
+async function geocodificarDireccion(direccion) {
+    const fallback = { lat: 4.6950, lng: -74.0820 }; // Engativá solo si todo falla
+    if (!direccion || direccion.trim() === '') return fallback;
+
+    // 1. Limpiamos y estandarizamos la dirección
+    let limpia = direccion
+        .replace(/\bCl\.?\b/gi,  'Calle')
+        .replace(/\bCra?\.?\b|\bKr\.?\b|\bKrr\.?\b/gi, 'Carrera')
+        .replace(/\bAv\.?\b/gi,  'Avenida')
+        .replace(/\bDg\.?\b/gi,  'Diagonal')
+        .replace(/\bTv\.?\b/gi,  'Transversal')
+        .replace(/bogot[aá]/gi, '') 
+        .replace(/#/g, '')          
+        .replace(/\s*-\s*/g, ' ')   
+        .replace(/No\.?\s*/gi, '')  
+        .replace(/\s{2,}/g, ' ')    
+        .trim();
+
+    // 2. TRUCO PARA COLOMBIA: Extraer solo la intersección
+    // Si dice "Carrera 13 54 56", le quitamos el "56" para que busque "Carrera 13 54" (la esquina)
+    let partes = limpia.split(' ');
+    let interseccion = limpia;
+    
+    // Verificamos si la última parte es un número (la puerta) y se la quitamos
+    if (partes.length >= 3 && !isNaN(partes[partes.length - 1])) {
+        interseccion = partes.slice(0, - 1).join(' '); 
+    }
+
+    // 3. Intentamos 3 variantes, de más exacta a más general
+    const variantes = [
+        `${limpia}, Bogotá, Colombia`,        // Intento 1: La casa exacta (Ej: Carrera 13 54 56)
+        `${interseccion}, Bogotá, Colombia`,  // Intento 2: La esquina de la cuadra (Ej: Carrera 13 54)
+        `${direccion}, Bogotá, Colombia`      // Intento 3: Lo que escribió el usuario tal cual
+    ];
+
+    for (const query of variantes) {
+        try {
+            const url  = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=co`;
+            const res  = await fetch(url, {
+                headers: { 'Accept-Language': 'es', 'User-Agent': 'TeckcelUMB/1.0' }
+            });
+            const data = await res.json();
+
+            if (data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lng = parseFloat(data[0].lon);
+
+                // Verificamos que no nos mande a otra ciudad por error
+                const enBogota = lat > 4.45 && lat < 4.85 && lng > -74.25 && lng < -73.99;
+                
+                if (enBogota) {
+                    console.log(`✅ Ubicado en el mapa usando: "${query}"`);
+                    return { lat, lng };
+                }
+            }
+        } catch (_) {}
+    }
+
+    console.warn(`⚠️ OpenStreetMap no reconoce "${direccion}". Usando coordenada por defecto.`);
     return fallback;
 }
 
