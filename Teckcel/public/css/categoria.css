@@ -126,3 +126,64 @@
     background: #ffe4e6; 
     transform: scale(1.05); 
 }
+
+/* ==========================================
+   DISEÑO RESPONSIVO (MÓVILES Y TABLETS)
+   ========================================== */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Ajustes de la barra de navegación */
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .search-bar {
+        width: 100%; /* El buscador ocupa todo el ancho */
+    }
+
+    /* 2. Textos más pequeños para que no se desborden */
+    .creative-hero h1, .hero-presupuesto h1 {
+        font-size: 2rem !important;
+    }
+    .hero-container p, .hero-presupuesto p {
+        font-size: 1rem;
+    }
+
+    /* 3. Cuadrículas (Grids) pasan de varias columnas a 1 sola columna */
+    .ranking-grid, 
+    .about-grid, 
+    .layout-catalogo,
+    .stats-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 4. Barra lateral del catálogo pasa arriba en lugar de estar a la izquierda */
+    .sidebar-filtros {
+        width: 100%;
+        position: relative;
+        top: 0;
+        margin-bottom: 20px;
+    }
+
+    /* 5. Ajustes de la barra de presupuesto interactiva */
+    .slider-container-creative, .presupuesto-box {
+        flex-direction: column;
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* 6. El mapa de rastreo se ajusta al tamaño de la pantalla */
+    .rastreo-layout {
+        flex-direction: column;
+    }
+    #mapa-interactivo {
+        height: 350px !important; /* Más pequeño en celular */
+    }
+}

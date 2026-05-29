@@ -159,3 +159,82 @@
     background: #ffffff;
     cursor: pointer;
 }
+
+/* ==========================================
+   DISEÑO RESPONSIVO PANEL ADMIN (MÓVILES)
+   ========================================== */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Cambiamos el layout general para apilar todo */
+    .admin-body {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* 2. Transformamos la barra lateral en una barra superior */
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative; /* Quita el 'fixed' de PC */
+        display: flex;
+        flex-direction: column; /* Apila logo, menú y botón de salir */
+        padding: 15px;
+        gap: 15px;
+        z-index: 100;
+    }
+
+    /* 3. Menú deslizable con el dedo (Scroll horizontal) */
+    .admin-nav {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        overflow-x: auto; 
+        gap: 10px;
+        padding-bottom: 10px;
+    }
+
+    .admin-nav a {
+        white-space: nowrap; /* Evita que el texto de los botones se rompa */
+        padding: 10px 15px;
+    }
+
+    /* 4. EL TRUCO MÁS IMPORTANTE: Quitar el margen izquierdo de PC */
+    .admin-content {
+        margin-left: 0 !important; /* Si en PC tenías margin-left: 250px, esto lo anula */
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* 5. Cabeceras apiladas (Título + Botón "Nuevo Producto") */
+    .admin-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 15px;
+    }
+
+    /* 6. Modales 100% responsivos (Formulario de producto) */
+    .modal-card {
+        width: 95% !important;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    /* Rompemos el grid de 2 y 3 columnas del formulario para que sea 1 sola lista hacia abajo */
+    #form-producto > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important; 
+    }
+
+    /* 7. Tablas de datos con scroll horizontal seguro */
+    .admin-table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+    
+    .admin-table {
+        min-width: 800px; /* Obliga a la tabla a mantener su tamaño, activando el scroll horizontal */
+    }
+}

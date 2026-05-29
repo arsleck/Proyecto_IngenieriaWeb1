@@ -9,7 +9,7 @@ const { conectarDB, pool } = require('./src/config/db');
 const app = express();
 conectarDB();
 
-// ✅ CORS correcto para desarrollo local con cookies
+// CORS correcto para desarrollo local con cookies
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
@@ -17,9 +17,11 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Servir archivos estáticos desde la carpeta public
 app.use(express.static('public'));
 
-// ✅ UNA SOLA sesión, completa y correcta
+// UNA SOLA sesión, completa y correcta
 app.use(session({
     store: new pgSession({
         pool: pool,
@@ -36,11 +38,17 @@ app.use(session({
     }
 }));
 
+// ==========================================
+// REDIRECCIÓN AUTOMÁTICA AL INICIO
+// ==========================================
 app.get('/', (req, res) => {
-    res.json({ mensaje: '🚀 Servidor de TeckcelUMB funcionando al 100%' });
+    // Cuando alguien entra a la raíz del servidor, lo manda directo al HTML
+    res.redirect('/html/index.html');
 });
 
-// ✅ RUTAS (Todas agrupadas y ordenadas)
+// ==========================================
+// RUTAS DE LA API (Agrupadas y ordenadas)
+// ==========================================
 const productoRoutes = require('./src/routes/productoRoutes');
 app.use('/api/productos', productoRoutes);
 
@@ -62,11 +70,13 @@ app.use('/api/estadisticas', estadisticasRoutes);
 const valoracionRoutes = require('./src/routes/valoracionRoutes');
 app.use('/api/valoraciones', valoracionRoutes);
 
-// Las nuevas líneas que conectan el frontend con la base de datos
 const notificacionRoutes = require('./src/routes/notificacionRoutes');
 app.use('/api/notificaciones', notificacionRoutes);
 
+// ==========================================
+// INICIALIZACIÓN DEL SERVIDOR
+// ==========================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

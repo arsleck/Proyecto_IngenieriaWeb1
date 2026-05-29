@@ -4,7 +4,8 @@
 
 async function cargarPedidosAdmin() {
     try {
-        const res = await fetch('/api/pedidos/admin', { credentials: 'include' });
+        // CORRECCIÓN 1: La ruta correcta del backend es /todos
+        const res = await fetch('/api/pedidos/todos', { credentials: 'include' });
         
         if (!res.ok) throw new Error('Error al obtener pedidos');
         
@@ -12,6 +13,7 @@ async function cargarPedidosAdmin() {
         const tbody = document.getElementById('tabla-pedidos-admin');
         tbody.innerHTML = '';
 
+        // Ahora data.pedidos sí traerá la información correctamente
         if (!data.pedidos || data.pedidos.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #666;">Aún no hay pedidos en el sistema.</td></tr>';
             return;
@@ -59,7 +61,8 @@ async function cambiarEstadoPedido(pedidoId, nuevoEstado) {
     }
 
     try {
-        const res = await fetch('/api/pedidos/estado', {
+        // CORRECCIÓN 2: La ruta correcta del backend para el PUT es /actualizar
+        const res = await fetch('/api/pedidos/actualizar', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -72,9 +75,8 @@ async function cambiarEstadoPedido(pedidoId, nuevoEstado) {
         const data = await res.json();
 
         if (res.ok) {
-            // Notificamos si se envió el correo (según tu lógica del backend)
             if (nuevoEstado === 'Entregado') {
-                alert(`¡Estado actualizado! Se ha disparado el correo de entrega a ${data.pedido.usuario_id}`);
+                alert(`¡Estado actualizado!`);
             }
             // Recargamos la tabla para que se actualice el color del borde del selector
             cargarPedidosAdmin();
